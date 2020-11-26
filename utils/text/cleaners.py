@@ -96,6 +96,7 @@ def vn_cleaners(text):
     text = lowercase(text)
     text = vn_convert_numbers(text)
     text = text.strip()
+    text = ''.join([t for t in text if t in phonemes_set])
     return text
     
 
