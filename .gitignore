@@ -46,9 +46,12 @@ pip-delete-this-directory.txt
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # Jekyll
 _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+
+data
