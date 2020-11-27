@@ -17,6 +17,7 @@ hyperparameter. Some cleaners are English-specific. You'll typically want to use
 '''
 
 import re
+import unicodedata
 from unidecode import unidecode
 from .numbers import normalize_numbers
 from .vn_numbers import vn_convert_numbers
@@ -95,8 +96,8 @@ def vn_cleaners(text):
     text = norm_text(text)
     text = lowercase(text)
     text = vn_convert_numbers(text)
-    text = text.strip()
     text = ''.join([t for t in text if t in phonemes_set])
+    text = text.strip()
     return text
     
 

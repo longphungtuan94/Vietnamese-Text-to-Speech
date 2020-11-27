@@ -17,6 +17,6 @@ _arpabet = ['@' + s for s in cmudict.valid_symbols]
 characters = 'abcdeghiklmnopqrstuvxyàáâãèéêìíòóôõùúýăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ'
 
 phonemes = sorted(list(
-   _pad + _punctuation + _special + characters))
+   _pad + _punctuation + characters))
 
 phonemes_set = set(phonemes)

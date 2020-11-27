@@ -12,7 +12,7 @@ class NumToVnStr:
         self.tu = 'tư'
         self.lam = 'lăm'
         self.linh = 'linh'
-        self.doc_so_rong = đọc_số_rỗng
+        self.doc_so_rong = doc_so_rong
 
 
     def to_vn_str(self, s):
