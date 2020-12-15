@@ -1,3 +1,23 @@
+# ForwardTacotron trained on Vietnamese dataset
+
+## Dataset:
+- [Zalo VLSP 2019](https://vlsp.org.vn/sites/default/files/2019-10/VLSP2019-TTS-PhungVietLam.pdf)
+
+## Demo:
+- Run the notebook `demo.ipynb` or run the following script:
+```
+python demo.py --text "Nhập một đoạn văn bản bất kì" --output model_outputs
+```
+
+## Pretrained models:
+Can be found in `pretrained` directory:
+- `tacotron_89K.pyt`: pretrained model for Tacotron
+- `forward_300K.pyt`: pretrained model for Forward Tacotron
+- `model_loss0.028723_step860000_weights.pyt`: pretrained model for WaveRNN
+
+## Training:
+Please refer to the original repo [ForwardTacotron](https://github.com/as-ideas/ForwardTacotron)
+
 # ⏩ ForwardTacotron
 
 Inspired by Microsoft's [FastSpeech](https://www.microsoft.com/en-us/research/blog/fastspeech-new-text-to-speech-model-improves-on-speed-accuracy-and-controllability/)
