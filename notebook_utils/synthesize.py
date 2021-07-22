@@ -13,8 +13,11 @@ def init_hparams(hp_file):
     hp.configure(hp_file)
 
 
-def get_forward_model(model_path):
-    device = torch.device('cuda')
+def get_forward_model(model_path, gpu=True):
+    if gpu:
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
     model = ForwardTacotron(embed_dims=hp.forward_embed_dims,
                             num_chars=len(phonemes),
                             durpred_rnn_dims=hp.forward_durpred_rnn_dims,
@@ -37,9 +40,11 @@ def get_forward_model(model_path):
     return model
 
 
-def get_wavernn_model(model_path):
-    device = torch.device('cuda')
-    print()
+def get_wavernn_model(model_path, gpu=True):
+    if gpu:
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
     model = WaveRNN(rnn_dims=hp.voc_rnn_dims,
                     fc_dims=hp.voc_fc_dims,
                     bits=hp.bits,
