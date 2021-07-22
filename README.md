@@ -1,7 +1,17 @@
-# ForwardTacotron trained on Vietnamese dataset
+# Vietnamese Text to Speech
+
+- Forward Tacotron trained Vietnamese Dataset.
+- This work is heavily based on [ForwardTacotron](https://github.com/as-ideas/ForwardTacotron). For a more detailed description, please see the original authors [README](!https://github.com/as-ideas/ForwardTacotron/blob/master/README.md).
 
 ## Dataset:
 - [Zalo VLSP 2019](https://vlsp.org.vn/sites/default/files/2019-10/VLSP2019-TTS-PhungVietLam.pdf)
+
+## Installation
+- Python >= 3.6
+- Install dependencies:
+```
+pip install -r requirements.txt
+```
 
 ## Demo:
 - Run the notebook `demo.ipynb` or run the following script:
@@ -16,62 +26,10 @@ Can be found in `pretrained` directory:
 - `model_loss0.028723_step860000_weights.pyt`: pretrained model for WaveRNN
 
 ## Training:
-Please refer to the original repo [ForwardTacotron](https://github.com/as-ideas/ForwardTacotron)
 
-# ⏩ ForwardTacotron
-
-Inspired by Microsoft's [FastSpeech](https://www.microsoft.com/en-us/research/blog/fastspeech-new-text-to-speech-model-improves-on-speed-accuracy-and-controllability/)
-we modified Tacotron (Fork from fatchord's [WaveRNN](https://github.com/fatchord/WaveRNN)) to generate speech in a single forward pass using a duration predictor to align text and generated mel spectrograms. Hence, we call the model ForwardTacotron (see Figure 1).
-
-<p align="center">
-  <img src="assets/model.png" width="700" />
-</p>
-<p align="center">
-  <b>Figure 1:</b> Model Architecture.
-</p>
-
-The model has following advantages:
-- **Robustness:** No repeats and failed attention modes for challenging sentences.
-- **Speed:** The generation of a mel spectogram takes about 0.04s on a GeForce RTX 2080.
-- **Controllability:** It is possible to control the speed of the generated utterance.
-- **Efficiency:** In contrast to FastSpeech and Tacotron, the model of ForwardTacotron
-does not use any attention. Hence, the required memory grows linearly with text size, which makes it possible to synthesize large articles at once.
-
-
-## UPDATE (28.10.2020)
-- Added pitch conditioning similar to the one in [FastPitch](https://arxiv.org/abs/2006.06873), model converges now in about 50k steps (a couple hrs training).
-- Pitch can be manipulated in inference, e.g. with --amp 2.0 for larger pitch swings.
-- Try pitch manipulation with the newest model in [colab](https://colab.research.google.com/github/as-ideas/ForwardTacotron/blob/master/notebooks/synthesize.ipynb).
-
-## 🔈 Samples
-
-[Can be found here.](https://as-ideas.github.io/ForwardTacotron/)
-
-The samples are generated with a model trained on LJSpeech. You can try out the latest pretrained model with the following notebook:  
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/as-ideas/ForwardTacotron/blob/master/notebooks/synthesize.ipynb)
-
-## ⚙️ Installation
-
-Make sure you have:
-
-* Python >= 3.6
-
-Install espeak as phonemizer backend (for macOS use brew):
-```
-sudo apt-get install espeak
-```
-
-Then install the rest with pip:
-```
-pip install -r requirements.txt
-```
-
-## 🚀 Training your own Model
-
-(1) Download and preprocess the [LJSpeech](https://keithito.com/LJ-Speech-Dataset/) dataset:
+(1) Preprocess the dataset:
  ```
-python preprocess.py --path /path/to/ljspeech
+python preprocess.py --path /path/to/dataset
 ```
 (2) Train Tacotron with:
 ```
@@ -85,22 +43,8 @@ python train_tacotron.py --force_align
 ```
 python train_forward.py
 ```
-(5) Generate Sentences with Griffin-Lim vocoder:
-```
-python gen_forward.py --alpha 1 --input_text 'this is whatever you want it to be' griffinlim
-```
-If you want to use the [MelGAN](https://github.com/seungwonpark/melgan) vocoder, you can produce .mel files with:
-```
-python gen_forward.py --input_text 'this is whatever you want it to be' melgan
-```
-To vocode the resulting .mel files use the inference.py script from the MelGAN repo and point to the model output folder (see inference example at [MelGAN](https://github.com/seungwonpark/melgan))
 
-As in the original repo you can also use a trained WaveRNN vocoder:
-```
-python gen_forward.py --input_text 'this is whatever you want it to be' wavernn
-```
-
-For training the model on your own dataset just bring it to the LJSpeech-like format:
+For training the model, just bring it to the [LJSpeech](https://keithito.com/LJ-Speech-Dataset/) format:
 ```
 |- dataset_folder/
 |   |- metadata.csv
@@ -109,70 +53,4 @@ For training the model on your own dataset just bring it to the LJSpeech-like fo
 |       |- ...
 ```
 
-For languages other than English, change the language and cleaners params in the hparams.py, e.g. for French:
-```
-language = 'fr'
-tts_cleaner_name = 'basic_cleaners'
-```
-
-____
-You can monitor the training processes for Tacotron and ForwardTacotron with 
-```
-tensorboard --logdir checkpoints
-```
-Here is what the ForwardTacotron tensorboard looks like:
-<p align="center">
-  <img src="assets/tensorboard.png" width="700" />
-</p>
-<p align="center">
-  <b>Figure 2:</b> Tensorboard example for training a ForwardTacotron model.
-</p>
-
-
-## Use the pretrained Models
-
-You can synthesize text using the pretrained models with
-```
-python gen_forward.py --input_text 'Hi there!' --hp_file pretrained/pretrained_hparams.py --tts_weights pretrained/forward_400K.pyt wavernn --voc_weights pretrained/wave_575K.pyt
-
-```
-
-## Tips for training a WaveRNN model
-
-- From experience I recommend starting with the standard params (RAW mode with 9 bit), which
-should start to sound good after about 300k steps.
-- Sound quality of the models varies quite a bit, so it is important to cherry-pick the best one.
-- For cherry-picking it is useful to listen to the validation sound samples in tensorboard. 
-The sound quality of the samples is measured by an additional metric (L1 distance of mel specs).
-- The top k models according to the above metric are constantly monitored and checkpointed under path/to/checkpoint/top_k_models.
-
-Here is what the WaveRNN tensorboard looks like:
-<p align="center">
-  <img src="assets/tensorboard_wavernn.png" width="700" />
-</p>
-<p align="center">
-  <b>Figure 3:</b> Tensorboard example for training a WaveRNN model.
-</p>
-
-
-## References
-
-* [FastSpeech: Fast, Robust and Controllable Text to Speech](https://arxiv.org/abs/1905.09263)
-* [FastPitch: Parallel Text-to-speech with Pitch Prediction](https://arxiv.org/abs/2006.06873)
-
-## Acknowlegements
-
-* [https://github.com/keithito/tacotron](https://github.com/keithito/tacotron)
-* [https://github.com/fatchord/WaveRNN](https://github.com/fatchord/WaveRNN)
-* [https://github.com/seungwonpark/melgan](https://github.com/seungwonpark/melgan)
-* [https://github.com/xcmyz/LightSpeech](https://github.com/xcmyz/LightSpeech)
-* [https://github.com/resemble-ai/Resemblyzer](https://github.com/resemble-ai/Resemblyzer)
-* [https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/FastPitch](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/FastPitch)
-
-## Maintainers
-
-* Christian Schäfer, github: [cschaefer26](https://github.com/cschaefer26)
-
-## Copyright
-
-See [LICENSE](LICENSE) for details.
+Or refer to the original repo [ForwardTacotron](https://github.com/as-ideas/ForwardTacotron) for more in depth details.
